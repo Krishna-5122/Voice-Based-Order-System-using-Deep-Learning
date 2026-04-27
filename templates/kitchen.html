@@ -1,0 +1,261 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kitchen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #070A13;
+        --panel: rgba(255,255,255,.06);
+        --panel2: rgba(255,255,255,.08);
+        --border: rgba(255,255,255,.12);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.68);
+        --brand: #7C3AED;
+        --brand2: #06B6D4;
+        --good: #22C55E;
+        --warn: #F59E0B;
+        --bad: #EF4444;
+        --shadow: 0 18px 60px rgba(0,0,0,.40);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background: radial-gradient(1200px 600px at 25% -10%, rgba(124,58,237,.35), transparent 60%),
+                    radial-gradient(1200px 700px at 120% 0%, rgba(6,182,212,.26), transparent 65%),
+                    var(--bg);
+        color: var(--text);
+      }
+      a { color: inherit; text-decoration: none; }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 18px 44px; }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: .2px;
+      }
+      .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: 0 12px 40px rgba(124,58,237,.35);
+      }
+      .nav { display:flex; align-items:center; gap: 10px; flex-wrap: wrap; justify-content:flex-end; }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.04);
+        color: rgba(255,255,255,.90);
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.05);
+        color: rgba(255,255,255,.86);
+      }
+      .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--good); box-shadow: 0 0 0 6px rgba(34,197,94,.12); }
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255,255,255,.05);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .cardHeader {
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        background: rgba(0,0,0,.18);
+      }
+      .cardTitle { margin:0; font-size: 15px; font-weight: 700; letter-spacing: .2px; }
+      .cardBody { padding: 16px; }
+      .tickets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      @media (max-width: 1050px) { .tickets { grid-template-columns: 1fr; } }
+      .ticket {
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+        padding: 14px;
+      }
+      .ticketTop { display:flex; align-items:flex-start; justify-content:space-between; gap: 10px; }
+      .ticketMeta { display:flex; gap: 8px; flex-wrap: wrap; align-items:center; }
+      .status {
+        display:inline-flex;
+        align-items:center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(0,0,0,.22);
+        font-size: 12px;
+        color: rgba(255,255,255,.86);
+      }
+      .statusDot { width: 8px; height: 8px; border-radius: 99px; background: var(--warn); }
+      .status.ready .statusDot { background: var(--good); }
+      .status.preparing .statusDot { background: var(--warn); }
+      .status.new .statusDot { background: var(--brand2); }
+      .items { margin: 10px 0 0; padding-left: 18px; color: rgba(255,255,255,.86); }
+      .items li { margin: 6px 0; }
+      .row { display:flex; gap: 10px; flex-wrap: wrap; align-items:center; margin-top: 12px; }
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(255,255,255,.06);
+        color: rgba(255,255,255,.90);
+        padding: 10px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        letter-spacing: .1px;
+      }
+      .btn:hover { background: rgba(255,255,255,.10); }
+      .btn.primary { background: linear-gradient(135deg, var(--brand), var(--brand2)); border-color: rgba(255,255,255,.16); }
+      .muted { color: var(--muted); }
+      .empty {
+        border-radius: 16px;
+        border: 1px dashed rgba(255,255,255,.18);
+        background: rgba(0,0,0,.16);
+        padding: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>Kitchen</div>
+          <span class="pill">Live orders</span>
+        </div>
+        <div class="nav">
+          <div class="user-info">
+            {{ user }} ({{ shift }})
+          </div>
+          <a class="pill" href="/kitchen/menu">Menu Management</a>
+          <a class="pill" href="/kitchen/logout" style="color: var(--bad); border-color: rgba(239,68,68,0.3);">Logout</a>
+          <span class="badge"><span class="dot"></span><span id="live">Refreshing…</span></span>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="cardHeader">
+          <h1 class="cardTitle">Kitchen Queue</h1>
+          <span class="pill">Auto refresh 2s</span>
+        </div>
+        <div class="cardBody">
+          <div id="tickets" class="tickets"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      async function api(path, opts) {
+        const r = await fetch(path, opts);
+        if (!r.ok) throw new Error(await r.text());
+        return r;
+      }
+
+      function render(tickets) {
+        const root = document.getElementById('tickets');
+        if (!tickets.length) {
+          root.innerHTML = '<div class="empty"><div style="font-weight:700; margin-bottom:6px;">No paid orders yet</div><div class="muted">Complete a payment to push an order here.</div></div>';
+          return;
+        }
+        root.innerHTML = tickets.map(t => {
+          const status = (t.kitchen_status || 'new').toLowerCase();
+          const items = (t.items || []).map(it => `<li><span style="font-weight:700;">${it.qty}×</span> ${it.name}${it.notes ? ' <span class="muted">— ' + it.notes + '</span>' : ''}</li>`).join('');
+          
+          let actions = '';
+          if (status === 'new' || status === 'paid') {
+            actions = `<button class="btn primary" onclick="setStatus(${t.order_id}, 'preparing')">Preparing</button>`;
+          } else if (status === 'preparing') {
+            actions = `<button class="btn primary" onclick="setStatus(${t.order_id}, 'ready')">Ready</button>`;
+          } else if (status === 'ready') {
+            actions = `<button class="btn" style="border-color:var(--bad); color:var(--bad);" onclick="setStatus(${t.order_id}, 'completed')">Delete</button>`;
+          }
+
+          return `
+            <div class="ticket">
+              <div class="ticketTop">
+                <div>
+                  <div style="font-weight:800; letter-spacing:.2px;">Order #${t.daily_id || t.order_id}</div>
+                  <div class="muted" style="font-size:13px;">
+                    ${t.customer_name ? ('Customer: ' + t.customer_name) : 'Customer: —'}
+                    ${t.customer_phone ? (' · ' + t.customer_phone) : ''}
+                  </div>
+                  <div class="ticketMeta">
+                    <span class="pill">${t.customer_name ? t.customer_name : 'Customer'}</span>
+                    <span class="status ${status}">
+                      <span class="statusDot"></span>
+                      <span style="text-transform:capitalize;">${status}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <ul class="items">${items}</ul>
+              <div class="row">${actions}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      async function load() {
+        const label = document.getElementById('live');
+        try {
+          const r = await api('/api/kitchen/tickets');
+          const data = await r.json();
+          render(data.tickets || []);
+          const now = new Date();
+          label.textContent = `Updated ${now.toLocaleTimeString()}`;
+        } catch (e) {
+          label.textContent = 'Offline';
+        }
+      }
+
+      async function setStatus(orderId, status) {
+        await api(`/api/kitchen/${orderId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        await load();
+      }
+
+      window.setStatus = setStatus;
+      load();
+      setInterval(load, 2000);
+    </script>
+  </body>
+</html>

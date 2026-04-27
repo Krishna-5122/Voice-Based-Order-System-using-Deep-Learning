@@ -1,0 +1,7 @@
+Flask==3.1.0
+numpy==2.1.3
+soundfile==0.13.1
+torch==2.9.1
+transformers==4.57.3
+pymongo==4.8.0
+mongomock==4.1.2

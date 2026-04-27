@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #070A13;
+        --border: rgba(255,255,255,.12);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.60);
+        --brand: #7C3AED;
+        --brand2: #06B6D4;
+        --panel: rgba(255,255,255,.05);
+        --danger: #ef4444;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(0,0,0,.3);
+      }
+      .logo { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 32px;
+      }
+      .card {
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+      }
+      .statLabel { color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+      .statValue { font-size: 28px; font-weight: 700; }
+      .sectionTitle { margin: 0 0 16px; font-size: 18px; font-weight: 600; }
+      
+      table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+      th { color: var(--muted); font-weight: 500; }
+      td { color: rgba(255,255,255,.85); }
+      .status {
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-size: 12px;
+        background: rgba(255,255,255,.1);
+        display: inline-block;
+      }
+      .status.paid { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+      .status.open { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+      .status.completed { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+      
+      .btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn:hover { background: rgba(255,255,255,.05); }
+      
+      .btn-danger {
+        color: var(--danger);
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+      .btn-danger:hover {
+        background: rgba(239, 68, 68, 0.1);
+      }
+
+      select {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="logo">
+        <div style="width:20px; height:20px; background:linear-gradient(135deg, var(--brand), var(--brand2)); border-radius:6px;"></div>
+        Teja's Kitchen Admin
+      </div>
+      <a href="/admin/logout" class="btn">Logout</a>
+    </div>
+
+    <div class="wrap">
+      <div class="grid">
+        <div class="card">
+          <div class="statLabel">Today's Orders</div>
+          <div class="statValue">{{ stats.today_orders }}</div>
+        </div>
+        <div class="card">
+          <div class="statLabel">Today's Revenue</div>
+          <div class="statValue">₹{{ stats.today_revenue }}</div>
+        </div>
+        <div class="card">
+          <div class="statLabel">This Month's Orders</div>
+          <div class="statValue">{{ stats.month_orders }}</div>
+        </div>
+        <div class="card">
+          <div class="statLabel">This Month's Revenue</div>
+          <div class="statValue">₹{{ stats.month_revenue }}</div>
+        </div>
+      </div>
+
+      <h2 class="sectionTitle">Kitchen Staff Management</h2>
+      <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <!-- User List -->
+        <div class="card" style="padding:0; overflow:hidden;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Shift</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ user.shift }}</td>
+                        <td>
+                            <form method="POST" action="/admin/users/delete" style="display:inline;" onsubmit="return confirm('Delete {{ user.username }}?');">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="text-align:center; padding:12px;">No users found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add User -->
+        <div class="card">
+            <h3 style="margin-top:0;">Add Kitchen User</h3>
+            <form method="POST" action="/admin/users">
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; margin-bottom:6px; font-size:14px; color:var(--muted);">Username</label>
+                    <input type="text" name="username" required style="width:100%; padding:8px; border-radius:6px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:white;">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:6px; font-size:14px; color:var(--muted);">Password</label>
+                    <input type="text" name="password" required style="width:100%; padding:8px; border-radius:6px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:white;">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:6px; font-size:14px; color:var(--muted);">Shift</label>
+                    <select name="shift" style="width:100%; padding:8px; border-radius:6px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:white;">
+                        <option value="Morning">Morning</option>
+                        <option value="Night">Night</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="background:var(--brand); border:none; width:100%;">Create User</button>
+            </form>
+        </div>
+      </div>
+
+      <h2 class="sectionTitle">Recent Orders</h2>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Table</th>
+              <th>Status</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr id="row-{{ order.id }}">
+              <td>#{{ order.daily_id }}</td>
+              <td>{{ order.table_id }}</td>
+              <td>
+                <select onchange="updateStatus({{ order.id }}, this.value)">
+                  <option value="open" {% if order.status == 'open' %}selected{% endif %}>Open</option>
+                  <option value="awaiting_payment" {% if order.status == 'awaiting_payment' %}selected{% endif %}>Awaiting Payment</option>
+                  <option value="paid" {% if order.status == 'paid' %}selected{% endif %}>Paid</option>
+                  <option value="preparing" {% if order.status == 'preparing' %}selected{% endif %}>Preparing</option>
+                  <option value="ready" {% if order.status == 'ready' %}selected{% endif %}>Ready</option>
+                  <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
+                </select>
+              </td>
+              <td>
+                {% for item in order.order_items %}
+                  {{ item.qty }}x {{ item.name }}<br>
+                {% endfor %}
+              </td>
+              <td>₹{{ order.total }}</td>
+              <td>{{ order.time }}</td>
+              <td>
+                <button class="btn btn-danger" onclick="deleteOrder({{ order.id }})">Delete</button>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center; padding: 20px;">No recent orders</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      async function deleteOrder(id) {
+        if(!confirm('Are you sure you want to delete this order?')) return;
+        
+        try {
+          const res = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+          if(res.ok) {
+            document.getElementById(`row-${id}`).remove();
+          } else {
+            alert('Failed to delete order');
+          }
+        } catch(e) {
+          console.error(e);
+          alert('Error deleting order');
+        }
+      }
+
+      async function updateStatus(id, newStatus) {
+        try {
+          const res = await fetch(`/api/orders/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ status: newStatus }),
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if(!res.ok) {
+            alert('Failed to update status');
+            location.reload(); // Revert UI
+          }
+        } catch(e) {
+          console.error(e);
+          alert('Error updating status');
+        }
+      }
+    </script>
+  </body>
+</html>

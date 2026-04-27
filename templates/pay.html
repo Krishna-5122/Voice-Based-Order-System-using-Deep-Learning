@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pay Order #{{ daily_id }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #070A13;
+        --panel: rgba(255,255,255,.06);
+        --panel2: rgba(255,255,255,.08);
+        --border: rgba(255,255,255,.12);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.68);
+        --brand: #7C3AED;
+        --brand2: #06B6D4;
+        --good: #22C55E;
+        --warn: #F59E0B;
+        --bad: #EF4444;
+        --shadow: 0 18px 60px rgba(0,0,0,.40);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background: radial-gradient(1200px 600px at 25% -10%, rgba(124,58,237,.35), transparent 60%),
+                    radial-gradient(1200px 700px at 120% 0%, rgba(6,182,212,.26), transparent 65%),
+                    var(--bg);
+        color: var(--text);
+      }
+      a { color: inherit; text-decoration: none; }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px 44px; }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: .2px;
+      }
+      .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: 0 12px 40px rgba(124,58,237,.35);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.04);
+        color: rgba(255,255,255,.90);
+      }
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255,255,255,.05);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .cardHeader {
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        background: rgba(0,0,0,.18);
+      }
+      .cardTitle { margin:0; font-size: 15px; font-weight: 700; letter-spacing: .2px; }
+      .cardBody { padding: 16px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      @media (max-width: 950px) { .grid { grid-template-columns: 1fr; } }
+      .kv { display: grid; gap: 8px; }
+      .kvRow { display: flex; justify-content: space-between; gap: 10px; color: rgba(255,255,255,.86); }
+      .kvRow span { color: var(--muted); }
+      .muted { color: var(--muted); }
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(255,255,255,.06);
+        color: rgba(255,255,255,.90);
+        padding: 10px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: .1px;
+      }
+      .btn:hover { background: rgba(255,255,255,.10); }
+      .btn.primary { background: linear-gradient(135deg, var(--brand), var(--brand2)); border-color: rgba(255,255,255,.16); }
+      .row { display:flex; gap: 10px; flex-wrap: wrap; align-items:center; }
+      .status {
+        display:inline-flex;
+        align-items:center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(0,0,0,.22);
+        font-size: 12px;
+        color: rgba(255,255,255,.86);
+      }
+      .statusDot { width: 8px; height: 8px; border-radius: 99px; background: var(--warn); }
+      .status.paid .statusDot { background: var(--good); }
+      .status.pending .statusDot { background: var(--warn); }
+      .qr {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px dashed rgba(255,255,255,.18);
+        background: rgba(0,0,0,.16);
+        min-height: 260px;
+      }
+      .toast {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(0,0,0,.20);
+        color: rgba(255,255,255,.86);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>VoxOrder</div>
+          <span class="pill">Secure checkout</span>
+        </div>
+        <a class="pill" href="/" target="_blank">Back to customer</a>
+      </div>
+
+      <section class="card">
+        <div class="cardHeader">
+          <h1 class="cardTitle">Payment for Order #{{ daily_id }}</h1>
+          <span class="status {{ status }}">
+            <span class="statusDot"></span>
+            <span id="statusText" style="text-transform:capitalize;">{{ status }}</span>
+          </span>
+        </div>
+        <div class="cardBody">
+          <div class="grid">
+            <div>
+              <div class="kv">
+                <div style="margin-bottom: 12px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  {% for item in items %}
+                  <div class="kvRow" style="margin-bottom: 8px;">
+                    <div>
+                      <div>{{ item.qty }} × {{ item.name }}</div>
+                      <div class="muted" style="font-size:11px;">₹{{ item.price_fmt }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+
+                <div class="kvRow"><div>Subtotal</div><span>₹{{ subtotal_fmt }}</span></div>
+                {% for tax in taxes_list %}
+                <div class="kvRow"><div>Tax ({{ tax.rate }}%)</div><span>₹{{ tax.amount_fmt }}</span></div>
+                {% else %}
+                <div class="kvRow"><div>Tax</div><span>₹0.00</span></div>
+                {% endfor %}
+                <div class="kvRow" style="font-weight:800;"><div>Total</div><span style="color:rgba(255,255,255,.92);">₹{{ total_fmt }}</span></div>
+              </div>
+              <div style="height: 12px;"></div>
+              <div class="row">
+                <button class="btn primary" id="pay">Simulate Payment Success</button>
+                <button class="btn" id="openKitchen">Open kitchen</button>
+              </div>
+              <div id="msg" class="toast" style="display:none;"></div>
+              <div style="height: 10px;"></div>
+              <div class="muted" style="font-size:12px;">QR encodes: <span style="opacity:.9;">{{ pay_link }}</span></div>
+            </div>
+            <div>
+              <div id="qr" class="qr"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+      const payLink = {{ pay_link | tojson }};
+      if (window.QRCode) {
+        new QRCode(document.getElementById('qr'), { text: payLink, width: 220, height: 220, colorDark: "#0B1220", colorLight: "#FFFFFF" });
+      } else {
+        document.getElementById('qr').innerHTML = '<div class="muted">QR library not loaded. Open the payment link directly.</div>';
+      }
+
+      async function api(path, opts) {
+        const r = await fetch(path, opts);
+        if (!r.ok) throw new Error(await r.text());
+        return r;
+      }
+
+      function setToast(html) {
+        const el = document.getElementById('msg');
+        el.style.display = 'block';
+        el.innerHTML = html;
+      }
+
+      document.getElementById('pay').addEventListener('click', async () => {
+        await api(`/api/payments/{{ order_id }}/complete`, { method: 'POST' });
+        document.getElementById('statusText').textContent = 'paid';
+        const statusWrap = document.querySelector('.status');
+        if (statusWrap) statusWrap.classList.add('paid');
+        setToast('<div style="font-weight:700; margin-bottom:6px;">Payment confirmed</div><div class="muted" style="font-size:12px;">Order is sent to kitchen queue.</div>');
+      });
+      document.getElementById('openKitchen').addEventListener('click', () => {
+        window.open('/kitchen', '_blank');
+      });
+    </script>
+  </body>
+</html>

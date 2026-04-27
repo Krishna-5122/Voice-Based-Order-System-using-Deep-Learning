@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Menu Management - Kitchen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #070A13;
+            --panel: rgba(255, 255, 255, .05);
+            --border: rgba(255, 255, 255, .12);
+            --text: rgba(255, 255, 255, .92);
+            --muted: rgba(255, 255, 255, .60);
+            --brand: #7C3AED;
+            --brand2: #06B6D4;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Inter, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,.3);
+        }
+
+        .logo { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .user-info { display: flex; gap: 16px; align-items: center; font-size: 14px; color: var(--muted); }
+        .user-info strong { color: var(--text); }
+        
+        .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+        
+        .card {
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            margin-bottom: 24px;
+        }
+        
+        h1, h2, h3 { margin-top: 0; }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.05);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover { background: rgba(255,255,255,.1); }
+        .btn-primary { background: var(--brand); border-color: var(--brand); }
+        .btn-primary:hover { filter: brightness(1.1); background: var(--brand); }
+        .btn-danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--muted); font-weight: 500; font-size: 13px; }
+        
+        input, select {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #111827;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo">
+            <a href="/kitchen" style="text-decoration:none; color:inherit; display:flex; gap:8px; align-items:center;">
+                <div style="width:20px; height:20px; background:linear-gradient(135deg, var(--brand), var(--brand2)); border-radius:6px;"></div>
+                Kitchen Menu
+            </a>
+        </div>
+        <div class="user-info">
+            <span>{{ user }} ({{ shift }})</span>
+            <a href="/kitchen" class="btn">Back to Orders</a>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div class="card">
+            <h2>Add New Item</h2>
+            <form method="POST" action="/kitchen/menu/add" class="form-grid">
+                <div>
+                    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">Name</label>
+                    <input name="name" required placeholder="e.g. Dosa" />
+                </div>
+                <div>
+                    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">Category</label>
+                    <input name="category" required placeholder="e.g. main" />
+                </div>
+                <div>
+                    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">Price (₹)</label>
+                    <input name="price" type="number" step="0.01" required placeholder="0.00" />
+                </div>
+                <div>
+                    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">GST (%)</label>
+                    <input name="gst" type="number" required value="5" />
+                </div>
+                <button type="submit" class="btn btn-primary">Add Item</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Current Menu</h2>
+            <form method="POST" action="/kitchen/menu/availability">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Show</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>GST</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in menu_items %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="visible_ids" value="{{ item.id }}" {% if item.available %}checked{% endif %} />
+                        </td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>₹{{ "%.2f"|format(item.price_cents / 100) }}</td>
+                        <td>{{ item.gst_percent }}%</td>
+                        <td>
+                            {% if item.available %}
+                            <span style="color:var(--success)">Available</span>
+                            {% else %}
+                            <span style="color:var(--danger)">Unavailable</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn" onclick='openEditModal({{ item|tojson }})' style="margin-right:8px;">Edit</button>
+                            <form method="POST" action="/kitchen/menu/delete" style="display:inline;" onsubmit="return confirm('Delete {{ item.name }}?');">
+                                <input type="hidden" name="id" value="{{ item.id }}">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="margin-top:12px; display:flex; gap:10px;">
+                <button type="submit" class="btn btn-primary">Update visibility</button>
+                <span class="muted" style="font-size:12px;">Checked items appear on customer page; unchecked are hidden.</span>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:16px;">Edit Item</h3>
+            <form method="POST" action="/kitchen/menu/edit">
+                <input type="hidden" name="id" id="edit_id">
+                
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">Name</label>
+                    <input name="name" id="edit_name" required />
+                </div>
+                
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">Category</label>
+                    <input name="category" id="edit_category" required />
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+                    <div>
+                        <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">Price (₹)</label>
+                        <input name="price" id="edit_price" type="number" step="0.01" required />
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">GST (%)</label>
+                        <input name="gst" id="edit_gst" type="number" required />
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" name="available" id="edit_available" style="width:auto;">
+                    <label for="edit_available">Available</label>
+                </div>
+                
+                <div style="display:flex; gap:12px;">
+                    <button type="button" class="btn" onclick="closeEditModal()" style="flex:1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(item) {
+            document.getElementById('edit_id').value = item.id;
+            document.getElementById('edit_name').value = item.name;
+            document.getElementById('edit_category').value = item.category;
+            document.getElementById('edit_price').value = (item.price_cents / 100).toFixed(2);
+            document.getElementById('edit_gst').value = item.gst_percent;
+            document.getElementById('edit_available').checked = item.available;
+            
+            document.getElementById('editModal').classList.add('active');
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+        
+        // Close on outside click
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teja's Kitchen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #070A13;
+        --panel: rgba(255,255,255,.06);
+        --panel2: rgba(255,255,255,.08);
+        --border: rgba(255,255,255,.12);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.68);
+        --brand: #7C3AED;
+        --brand2: #06B6D4;
+        --good: #22C55E;
+        --warn: #F59E0B;
+        --bad: #EF4444;
+        --shadow: 0 18px 60px rgba(0,0,0,.40);
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background:
+          radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
+          radial-gradient(900px 700px at 85% 0%, rgba(6,182,212,.25), transparent 60%),
+          radial-gradient(900px 700px at 70% 90%, rgba(34,197,94,.14), transparent 60%),
+          var(--bg);
+      }
+      a { color: rgba(255,255,255,.9); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 18px 44px; }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: .2px;
+      }
+      .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: 0 12px 40px rgba(124,58,237,.35);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.04);
+        color: rgba(255,255,255,.90);
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.25fr .75fr;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      .heroCard {
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+        box-shadow: var(--shadow);
+      }
+      .heroTitle { font-size: 34px; line-height: 1.12; margin: 0 0 10px; }
+      .heroSub { margin: 0 0 14px; color: var(--muted); }
+      .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+      .chip {
+        font-size: 13px;
+        color: rgba(255,255,255,.86);
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0,0,0,.18);
+        cursor: pointer;
+        user-select: none;
+      }
+      .chip:hover { background: rgba(255,255,255,.07); }
+      .statGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .stat {
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.05);
+        padding: 12px;
+      }
+      .statLabel { color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+      .statValue { font-size: 18px; font-weight: 700; }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1.15fr .85fr;
+        gap: 16px;
+        align-items: start;
+      }
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255,255,255,.05);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .cardHeader {
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        background: rgba(0,0,0,.18);
+      }
+      .cardTitle { font-size: 14px; letter-spacing: .2px; margin: 0; color: rgba(255,255,255,.86); }
+      .cardBody { padding: 16px; }
+      .muted { color: var(--muted); }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(255,255,255,.04);
+        color: rgba(255,255,255,.92);
+        cursor: pointer;
+        user-select: none;
+        transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      }
+      .btn:hover { background: rgba(255,255,255,.07); }
+      .btn:active { transform: translateY(1px); }
+      .btn.primary {
+        border-color: rgba(124,58,237,.55);
+        background: linear-gradient(135deg, rgba(124,58,237,.92), rgba(6,182,212,.75));
+      }
+      .btn.primary:hover { filter: brightness(1.03); }
+      .btn:disabled { opacity: .5; cursor: not-allowed; }
+      .input, textarea, select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(0,0,0,.22);
+        color: rgba(255,255,255,.92);
+        outline: none;
+      }
+      textarea { resize: vertical; min-height: 92px; }
+      .menuList { display: grid; gap: 10px; }
+      .menuItem {
+        padding: 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .menuLeft { display: grid; gap: 3px; }
+      .menuName { font-weight: 600; }
+      .menuMeta { font-size: 12px; color: var(--muted); }
+      .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+      .tab { padding: 8px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); cursor: pointer; font-size: 13px; }
+      .tab.active { border-color: rgba(6,182,212,.55); background: rgba(6,182,212,.10); }
+      .panel { display: none; margin-top: 12px; }
+      .panel.active { display: block; }
+      .cartList { display: grid; gap: 10px; }
+      .cartItem { display: flex; justify-content: space-between; gap: 10px; padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); }
+      .qtyControls { display: inline-flex; gap: 6px; }
+      .badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); font-size: 12px; color: rgba(255,255,255,.86); }
+      .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--good); box-shadow: 0 0 0 4px rgba(34,197,94,.12); }
+      .divider { height: 1px; background: rgba(255,255,255,.10); margin: 14px 0; }
+      .kv { display: grid; gap: 8px; }
+      .kvRow { display: flex; justify-content: space-between; gap: 10px; color: rgba(255,255,255,.86); }
+      .kvRow span { color: var(--muted); }
+      .toast { margin-top: 10px; padding: 10px 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.20); color: rgba(255,255,255,.86); }
+      .foot { margin-top: 18px; color: rgba(255,255,255,.55); font-size: 12px; text-align: center; }
+      @media (max-width: 1050px) {
+        .hero { grid-template-columns: 1fr; }
+        .grid { grid-template-columns: 1fr; }
+      }
+      .modalOverlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8);
+        display: none; align-items: center; justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+      }
+      .modal {
+        background: #111827;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        text-align: center;
+      }
+      .modalTitle { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+      .modalText { color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+      .qrFrame {
+        background: white; padding: 16px; border-radius: 12px;
+        margin: 0 auto 20px; display: inline-block;
+      }
+      .qrFrame img { display: block; width: 200px; height: 200px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>Teja's Kitchen</div>
+          <span class="pill">Voice → Bill → QR → Kitchen</span>
+        </div>
+        <div class="nav">
+          <a class="pill" href="#menu">Menu</a>
+          <a class="pill" href="#voice">Voice</a>
+          {% if customer %}
+          <span class="pill">Hello, {{ customer.name }}</span>
+          <a class="pill" href="/customer/{{ customer.id }}">View my bill</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="heroCard">
+          <h1 class="heroTitle">Take orders in seconds. Customers just speak.</h1>
+          <p class="heroSub">This demo connects a voice transcript to your menu, creates an order, shows the bill, displays a QR payment page, and pushes the paid order to the kitchen screen.</p>
+          <div class="chips">
+            <div class="chip" data-chip="2 masala dosa and 1 coffee">“2 masala dosa and 1 coffee”</div>
+            <div class="chip" data-chip="one veg biryani and two water bottle">“one veg biryani and two water bottle”</div>
+            <div class="chip" data-chip="3 idli and 1 tea">“3 idli and 1 tea”</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="card" id="menu">
+          <div class="cardHeader">
+            <h2 class="cardTitle">Menu</h2>
+            <input class="input" id="menuSearch" placeholder="Search menu…" style="max-width: 260px;" />
+          </div>
+          <div class="cardBody">
+            <div id="menuList" class="menuList"></div>
+          </div>
+        </section>
+
+        <section class="card" id="voice">
+          <div class="cardHeader">
+            <h2 class="cardTitle">Voice & Understanding</h2>
+            <span class="badge">NLU: menu matching</span>
+          </div>
+          <div class="cardBody">
+            <div class="tabs">
+              <div class="tab active" data-tab="tabVoice">Voice</div>
+              <div class="tab" data-tab="tabType">Type</div>
+              <div class="tab" data-tab="tabDatasets">Datasets</div>
+            </div>
+
+            <div class="panel active" id="tabVoice">
+              <div class="row">
+                <button class="btn primary" id="startSpeech">Start voice</button>
+                <button class="btn" id="stopSpeech">Stop</button>
+                <button class="btn" id="clearTranscript">Clear</button>
+              </div>
+              <div style="height: 10px"></div>
+              <textarea id="transcript" placeholder="Your transcript appears here…"></textarea>
+              <div style="height: 10px"></div>
+              <div class="row">
+                <button class="btn primary" id="suggest">Suggest cart</button>
+                <button class="btn" id="applySuggested">Apply to cart</button>
+              </div>
+              <div id="suggestions" class="toast" style="display:none;"></div>
+            </div>
+
+            <div class="panel" id="tabType">
+              <p class="muted" style="margin-top: 0;">Type a sentence and convert it into a cart using your menu.</p>
+              <textarea id="typed" placeholder="Example: 2 masala dosa and 1 coffee"></textarea>
+              <div style="height: 10px"></div>
+              <div class="row">
+                <button class="btn primary" id="useTyped">Use typed text</button>
+                <button class="btn" id="suggestTyped">Suggest cart</button>
+              </div>
+            </div>
+
+            <div class="panel" id="tabDatasets">
+              <p class="muted" style="margin-top: 0;">This project is connected to your local training data manifests in <span style="opacity:.9;">data/</span>.</p>
+              <div class="row">
+                <select id="dsSelect" class="input" style="flex:1; min-width: 180px;">
+                  <option value="minds14">MINDS-14</option>
+                  <option value="slurp">SLURP</option>
+                </select>
+                <input id="dsIndex" class="input" type="number" min="0" value="0" style="width: 140px;" />
+                <button class="btn" id="prevSample" title="Previous sample">‹</button>
+                <button class="btn" id="nextSample" title="Next sample">›</button>
+                <button class="btn" id="randomSample">Random</button>
+                <button class="btn primary" id="loadSample">Load sample</button>
+              </div>
+              <div style="height: 10px"></div>
+              <audio id="dsAudio" controls style="width:100%; display:none;"></audio>
+              <div id="dsInfo" class="toast" style="display:none;"></div>
+              <div style="height: 10px"></div>
+              <div class="row">
+                <button class="btn" id="runAsrSample">Run server ASR</button>
+                <button class="btn" id="useGroundTruth">Use ground-truth as order text</button>
+                <button class="btn" id="useAsrTranscript" disabled>Use ASR transcript as order text</button>
+              </div>
+              <div id="asrOut" class="toast" style="display:none;"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="cardHeader">
+            <h2 class="cardTitle">Cart & Checkout</h2>
+            <span class="badge" id="orderBadge">No order</span>
+          </div>
+          <div class="cardBody">
+            <div id="cartList" class="cartList"></div>
+            <div class="divider"></div>
+            <div class="kv" id="totals"></div>
+            <div class="divider"></div>
+            <div class="row">
+              <button class="btn primary" id="createOrder">Create order</button>
+              <button class="btn primary" id="checkout" disabled>Checkout + QR</button>
+              <button class="btn" id="clearCart">Clear cart</button>
+            </div>
+            <div id="orderState" class="toast" style="display:none;"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="foot">
+        Demo only. Replace demo payment with real UPI/Stripe webhook in production.
+      </div>
+    </div>
+
+    <!-- Modal for QR Payment -->
+    <div class="modalOverlay" id="paymentModal">
+      <div class="modal">
+        <div class="modalTitle">Scan to Pay</div>
+        <div class="modalText">Total: <span id="modalTotal" style="color:white; font-weight:700;"></span><br>Scan the QR code below to complete payment.</div>
+        <div class="qrFrame">
+          <img id="modalQr" src="" alt="Payment QR" />
+        </div>
+        <div>
+           <button class="btn primary" onclick="finishPayment()">Done</button>
+         </div>
+       </div>
+     </div>
+
+    <script>
+      const CUSTOMER_ID = {{ (customer.id if customer) or 0 }};
+      let MENU = [];
+      let MENU_BY_ID = new Map();
+      let cart = [];
+      let suggested = [];
+      let currentOrderId = null;
+      let recognizer = null;
+      let DATASET_COUNTS = { minds14: 0, slurp: 0 };
+      let lastAsrTranscript = '';
+
+      function el(id) { return document.getElementById(id); }
+
+      async function api(path, opts) {
+        const r = await fetch(path, opts);
+        if (!r.ok) {
+          const t = await r.text();
+          throw new Error(t || r.statusText);
+        }
+        return r;
+      }
+
+      function rupees(cents) { return '₹' + (cents / 100).toFixed(2); }
+
+      function setToast(node, html) {
+        node.style.display = 'block';
+        node.innerHTML = html;
+      }
+
+      function hideToast(node) {
+        node.style.display = 'none';
+        node.innerHTML = '';
+      }
+
+      function renderMenu() {
+        const q = (el('menuSearch').value || '').toLowerCase().trim();
+        const list = el('menuList');
+        const items = MENU.filter(x => x.available).filter(x => !q || x.name.toLowerCase().includes(q));
+        list.innerHTML = items.map(it => `
+          <div class="menuItem">
+            <div class="menuLeft">
+              <div class="menuName">${it.name}</div>
+              <div class="menuMeta">${it.category} · ${rupees(it.price_cents)}</div>
+            </div>
+            <div class="row" style="gap:8px; align-items:center;">
+              <button class="btn" onclick="addToCart(${it.id})">Add</button>
+            </div>
+          </div>
+        `).join('') || '<div class="muted">No items found.</div>';
+      }
+
+      function cartTotals() {
+        let subtotal = 0;
+        let totalTax = 0;
+        let taxBreakdown = {};
+
+        for (const it of cart) {
+          const m = MENU_BY_ID.get(it.menu_item_id);
+          if (!m) continue;
+          const itemTotal = (it.qty || 0) * m.price_cents;
+          subtotal += itemTotal;
+          const gst = (m.gst_percent !== undefined) ? m.gst_percent : 5;
+          const itemTax = Math.round(itemTotal * gst / 100);
+          
+          totalTax += itemTax;
+          if (!taxBreakdown[gst]) taxBreakdown[gst] = 0;
+          taxBreakdown[gst] += itemTax;
+        }
+        const total = subtotal + totalTax;
+        return { subtotal, totalTax, taxBreakdown, total };
+      }
+
+      function renderCart() {
+        const root = el('cartList');
+        if (!cart.length) {
+          root.innerHTML = '<div class="muted">Cart is empty. Add items from menu or use voice.</div>';
+        } else {
+          root.innerHTML = cart.map(it => {
+            const m = MENU_BY_ID.get(it.menu_item_id);
+            const name = m ? m.name : it.name || 'Item';
+            const price = m ? m.price_cents : 0;
+            return `
+              <div class="cartItem">
+                <div>
+                  <div style="font-weight:600;">${name}</div>
+                  <div class="muted" style="font-size:12px;">${rupees(price)} each</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="qtyControls">
+                    <button class="btn" onclick="decQty(${it.menu_item_id})">−</button>
+                    <div class="pill">${it.qty}</div>
+                    <button class="btn" onclick="incQty(${it.menu_item_id})">+</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        const t = cartTotals();
+        let taxHtml = '';
+        const rates = Object.keys(t.taxBreakdown).sort((a,b) => Number(a)-Number(b));
+        if (rates.length === 0) {
+           taxHtml = `<div class="kvRow"><div>Tax</div><span>${rupees(0)}</span></div>`;
+        } else {
+           taxHtml = rates.map(r => `
+             <div class="kvRow"><div>Tax (${r}%)</div><span>${rupees(t.taxBreakdown[r])}</span></div>
+           `).join('');
+        }
+
+        el('totals').innerHTML = `
+          <div class="kvRow"><div>Subtotal</div><span>${rupees(t.subtotal)}</span></div>
+          ${taxHtml}
+          <div class="kvRow" style="font-weight:700;"><div>Total</div><span style="color:rgba(255,255,255,.92);">${rupees(t.total)}</span></div>
+        `;
+      }
+
+      function addToCart(menuItemId) {
+        const existing = cart.find(x => x.menu_item_id === menuItemId);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          const m = MENU_BY_ID.get(menuItemId);
+          cart.push({ menu_item_id: menuItemId, name: m ? m.name : '', qty: 1, notes: '' });
+        }
+        renderCart();
+      }
+
+      function incQty(menuItemId) {
+        const it = cart.find(x => x.menu_item_id === menuItemId);
+        if (!it) return;
+        it.qty += 1;
+        renderCart();
+      }
+
+      function decQty(menuItemId) {
+        const it = cart.find(x => x.menu_item_id === menuItemId);
+        if (!it) return;
+        it.qty -= 1;
+        if (it.qty <= 0) cart = cart.filter(x => x.menu_item_id !== menuItemId);
+        renderCart();
+      }
+
+      window.addToCart = addToCart;
+      window.incQty = incQty;
+      window.decQty = decQty;
+
+      async function loadMenu() {
+        const r = await api('/api/menu');
+        MENU = await r.json();
+        MENU_BY_ID = new Map(MENU.map(x => [x.id, x]));
+        renderMenu();
+        renderCart();
+      }
+
+      async function loadDatasetStats() {
+        const r = await api('/api/datasets');
+        const data = await r.json();
+        const m = data.minds14 ? data.minds14.examples : 0;
+        const s = data.slurp ? data.slurp.examples : 0;
+        DATASET_COUNTS = { minds14: m, slurp: s };
+        el('dsLabel').textContent = `${m} + ${s} samples`;
+        updateDatasetIndexMax();
+      }
+
+      function updateDatasetIndexMax() {
+        const dataset = el('dsSelect').value;
+        const max = Math.max(0, (DATASET_COUNTS[dataset] || 0) - 1);
+        el('dsIndex').max = String(max);
+        const current = Number(el('dsIndex').value || 0);
+        if (current > max) el('dsIndex').value = String(max);
+        if (current < 0) el('dsIndex').value = '0';
+      }
+
+      function stepSample(delta) {
+        const dataset = el('dsSelect').value;
+        const n = DATASET_COUNTS[dataset] || 0;
+        if (n <= 0) return;
+        let idx = Number(el('dsIndex').value || 0);
+        idx = (idx + delta) % n;
+        if (idx < 0) idx += n;
+        el('dsIndex').value = String(idx);
+        loadDatasetSample();
+      }
+
+      function randomSample() {
+        const dataset = el('dsSelect').value;
+        const n = DATASET_COUNTS[dataset] || 0;
+        if (n <= 0) return;
+        el('dsIndex').value = String(Math.floor(Math.random() * n));
+        loadDatasetSample();
+      }
+
+      async function nluSuggestFromText(text) {
+        const r = await api('/api/nlu', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transcript: text || '' })
+        });
+        const data = await r.json();
+        suggested = data.items || [];
+        const box = el('suggestions');
+        if (!suggested.length) {
+          setToast(box, 'No menu items detected. Try a phrase from above.');
+          return;
+        }
+        const html = '<div style="font-weight:600; margin-bottom:6px;">Detected items</div>' +
+          '<div class="muted" style="font-size:12px; margin-bottom:10px;">Click “Apply to cart” to replace your cart.</div>' +
+          '<div>' + suggested.map(it => `<div>${it.qty} × ${it.name}</div>`).join('') + '</div>';
+        setToast(box, html);
+      }
+
+      function applySuggestedToCart() {
+        if (!suggested.length) return;
+        cart = suggested.map(it => ({ menu_item_id: it.menu_item_id, name: it.name, qty: it.qty || 1, notes: it.notes || '' }));
+        renderCart();
+      }
+
+      async function createOrder() {
+        if (!cart.length) {
+          setToast(el('orderState'), 'Cart is empty. Add items first.');
+          return;
+        }
+        const r = await api('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ table_id: 'T1', items: cart })
+        });
+        const order = await r.json();
+        currentOrderId = order.id;
+        el('checkout').disabled = false;
+        el('orderBadge').textContent = `Order #${order.id}`;
+        setToast(el('orderState'), `Order <span class="pill">#${order.id}</span> created. Status <span class="pill">${order.status}</span>.`);
+      }
+
+      async function checkout() {
+        if (!currentOrderId) return;
+        const r = await api(`/api/orders/${currentOrderId}/checkout`, { method: 'POST' });
+        const data = await r.json();
+        setToast(el('orderState'), `Total <span class="pill">${rupees(data.total_cents)}</span> · Scan QR below.`);
+        
+        // Show Modal instead of new tab
+        el('modalTotal').textContent = rupees(data.total_cents);
+        // data.pay_url is the URL to the payment page. We can use a QR code API to generate a QR for it.
+        // For simplicity, let's just use a QR code generator service for the pay_url.
+        // Or if the backend provided a QR image URL, we could use that.
+        // Assuming pay_url is a link to the payment page:
+        el('modalQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.pay_url)}`;
+        el('paymentModal').style.display = 'flex';
+      }
+
+      function closeModal() {
+        el('paymentModal').style.display = 'none';
+      }
+
+      async function finishPayment() {
+        if (!currentOrderId) { closeModal(); return; }
+        try {
+          // Mark as paid
+          const res = await api(`/api/payments/${currentOrderId}/complete`, { method: 'POST' });
+          
+          closeModal();
+          
+          // Show success message
+          setToast(el('orderState'), `<div style="font-weight:700; margin-bottom:4px; color:var(--good);">Order Placed!</div><div style="color:rgba(255,255,255,0.9);">Your order #${currentOrderId} has been taken. Redirecting to your bill...</div>`);
+          
+          // Reset cart
+          cart = [];
+          const oldOrderId = currentOrderId;
+          currentOrderId = null;
+          renderCart();
+          el('checkout').disabled = true;
+          el('orderBadge').textContent = '';
+          
+          setTimeout(() => {
+            if (res.redirect_url) {
+              window.location.href = res.redirect_url;
+            } else if (CUSTOMER_ID) {
+              window.location.href = `/customer/${CUSTOMER_ID}`;
+            }
+          }, 1500);
+        } catch (e) {
+          console.error(e);
+          alert('Failed to complete payment: ' + e.message);
+        }
+      }
+
+      function initSpeech() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          setToast(el('orderState'), 'Browser speech-to-text not supported. Use Type tab or Dataset tab.');
+          return null;
+        }
+        const rec = new SpeechRecognition();
+        rec.continuous = true;
+        rec.interimResults = true;
+        rec.lang = 'en-US';
+        rec.onresult = (evt) => {
+          let finalText = '';
+          for (let i = evt.resultIndex; i < evt.results.length; i++) {
+            const res = evt.results[i];
+            if (res.isFinal) finalText += res[0].transcript + ' ';
+          }
+          if (finalText.trim()) {
+            const t = el('transcript');
+            t.value = (t.value + ' ' + finalText).trim();
+          }
+        };
+        return rec;
+      }
+
+      async function loadDatasetSample() {
+        const dataset = el('dsSelect').value;
+        const index = Number(el('dsIndex').value || 0);
+        const r = await api(`/api/datasets/${dataset}/sample?index=${index}`);
+        const data = await r.json();
+        const audio = el('dsAudio');
+        audio.src = data.audio_url;
+        audio.style.display = 'block';
+        const info = el('dsInfo');
+        setToast(info, `<div style="font-weight:600; margin-bottom:6px;">Sample</div><div class="muted" style="font-size:12px;">Dataset: ${data.dataset} · Index: ${data.index} · SR: ${data.sampling_rate}</div><div style="margin-top:8px;">${data.text || '<span class="muted">No text</span>'}</div>`);
+        hideToast(el('asrOut'));
+        lastAsrTranscript = '';
+        el('useAsrTranscript').disabled = true;
+      }
+
+      async function runAsrOnSample() {
+        const dataset = el('dsSelect').value;
+        const index = Number(el('dsIndex').value || 0);
+        const out = el('asrOut');
+        setToast(out, 'Running ASR…');
+        try {
+          const r = await api(`/api/asr_sample?dataset=${encodeURIComponent(dataset)}&index=${index}`);
+          const data = await r.json();
+          lastAsrTranscript = data.transcript || '';
+          el('useAsrTranscript').disabled = !lastAsrTranscript;
+          setToast(out, `<div style="font-weight:600; margin-bottom:6px;">Server ASR Output</div><div class="muted" style="font-size:12px;">${data.dataset} · ${data.index}</div><div style="margin-top:8px;">${data.transcript}</div>`);
+        } catch (e) {
+          lastAsrTranscript = '';
+          el('useAsrTranscript').disabled = true;
+          setToast(out, 'ASR failed. Try again.');
+        }
+      }
+
+      async function useGroundTruth() {
+        const dataset = el('dsSelect').value;
+        const index = Number(el('dsIndex').value || 0);
+        const r = await api(`/api/datasets/${dataset}/sample?index=${index}`);
+        const data = await r.json();
+        el('transcript').value = data.text || '';
+        await nluSuggestFromText(el('transcript').value);
+      }
+
+      async function useAsrTranscript() {
+        if (!lastAsrTranscript) return;
+        el('transcript').value = lastAsrTranscript;
+        setActiveTab('tabVoice');
+        await nluSuggestFromText(lastAsrTranscript);
+      }
+
+      function setActiveTab(tabId) {
+        for (const t of document.querySelectorAll('.tab')) t.classList.remove('active');
+        for (const p of document.querySelectorAll('.panel')) p.classList.remove('active');
+        document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+        el(tabId).classList.add('active');
+      }
+
+      document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setActiveTab(t.dataset.tab)));
+      document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+        el('transcript').value = c.dataset.chip || '';
+        nluSuggestFromText(el('transcript').value);
+      }));
+
+      el('menuSearch').addEventListener('input', renderMenu);
+      el('startSpeech').addEventListener('click', () => {
+        recognizer = recognizer || initSpeech();
+        if (recognizer) recognizer.start();
+      });
+      el('stopSpeech').addEventListener('click', () => { if (recognizer) recognizer.stop(); });
+      el('clearTranscript').addEventListener('click', () => { el('transcript').value = ''; hideToast(el('suggestions')); });
+      el('suggest').addEventListener('click', () => nluSuggestFromText(el('transcript').value));
+      el('applySuggested').addEventListener('click', applySuggestedToCart);
+      el('clearCart').addEventListener('click', () => { cart = []; renderCart(); });
+      el('createOrder').addEventListener('click', createOrder);
+      el('checkout').addEventListener('click', checkout);
+
+      el('useTyped').addEventListener('click', () => { el('transcript').value = el('typed').value || ''; setActiveTab('tabVoice'); });
+      el('suggestTyped').addEventListener('click', () => nluSuggestFromText(el('typed').value || ''));
+
+      el('dsSelect').addEventListener('change', () => { updateDatasetIndexMax(); loadDatasetSample(); });
+      el('loadSample').addEventListener('click', loadDatasetSample);
+      el('prevSample').addEventListener('click', () => stepSample(-1));
+      el('nextSample').addEventListener('click', () => stepSample(1));
+      el('randomSample').addEventListener('click', randomSample);
+      el('runAsrSample').addEventListener('click', runAsrOnSample);
+      el('useGroundTruth').addEventListener('click', useGroundTruth);
+      el('useAsrTranscript').addEventListener('click', useAsrTranscript);
+
+      loadMenu();
+      loadDatasetStats();
+      loadDatasetSample();
+    </script>
+  </body>
+</html>
